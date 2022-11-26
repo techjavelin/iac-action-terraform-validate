@@ -48,7 +48,7 @@ jobs:
 
       - name: test-terraform-versions // collect-results
         id: collect-results
-        run: echo "version=$(terraform version | head -n1 | cut -d' ' -f2)" >> $GITHUB_OUTPUT
+        run: echo version=$(terraform version --json | jq -r .terraform_version) >> $GITHUB_OUTPUT
 
       - name: test-terraform-versions // verify-version
         if: ${{ matrix.version != 'latest' }}
@@ -56,7 +56,7 @@ jobs:
         with:
           assertion: npm://@assertions/is-equal
           actual   : ${{ steps.collect-results.outputs.version }}
-          expected : v${{ matrix.version }}
+          expected : ${{ matrix.version }}
 
       - name: test-terraform-versions // collect-facts
         id: collect-facts
