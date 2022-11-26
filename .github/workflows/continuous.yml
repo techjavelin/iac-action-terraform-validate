@@ -48,14 +48,14 @@ jobs:
 
       - name: test-terraform-versions // collect-results
         id: collect-results
-        run: echo version=$(terraform version | head -n1 | cut -d' ' -f2) >> $GITHUB_OUTPUT
+        run: echo "version=$(terraform version | head -n1 | cut -d' ' -f2)" >> $GITHUB_OUTPUT
 
       - name: test-terraform-versions // verify-version
         if: ${{ matrix.version != 'latest' }}
         uses: pr-mpt/actions-assert@v4
         with:
           assertion: npm://@assertions/is-equal
-          action   : ${{ steps.collect-results.outputs.version }}
+          actual   : ${{ steps.collect-results.outputs.version }}
           expected : v${{ matrix.version }}
 
       - name: test-terraform-versions // collect-facts
@@ -70,5 +70,5 @@ jobs:
         uses: pr-mpt/actions-assert@v4
         with:
           assertion: npm://@assertions/is-equal
-          action   : ${{ steps.collect-results.outputs.version }}
+          actual   : ${{ steps.collect-results.outputs.version }}
           expected : v${{ steps.collect-facts.outputs.version }}
