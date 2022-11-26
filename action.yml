@@ -1,0 +1,57 @@
+---
+name: 'techjavelin/iac-github-actions // terraform // validate'
+description: 'Performs a Validation of all terraform files'
+
+branding:
+  icon: edit
+  color: green
+
+inputs:
+  terraform-dir:
+    description: "Absolute path or relative path from project root to where your terraform files are"
+    required: false
+    default: '.'
+  version: 
+    description: "Specific version of terraform to use"
+    required: false
+    default: 'latest'
+
+outputs:
+  init:
+    description: "Initialization Output"
+    value: ${{ steps.init.outputs.init }}
+
+  format:
+    description: "Formatting Results"
+    value: ${{ steps.format.outputs.outcome }}
+
+  format_files:
+    description: "Files formatted"
+    value: ${{ steps.validate.outputs.details }}
+
+  validate:
+    description: "Validation Results"
+    value: ${{ steps.validate.outputs.validation }}
+
+runs:
+  using: composite
+  steps:
+    - name: techjavelin/iac-action-terraform-validate // setup-terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.version }}
+
+    - name: techjavelin/iac-action-terraform-validate // terraform-init
+      id: init
+      run: terraform -chdir=${{ inputs.terraform-dir }} init -backend=false
+      shell: bash
+
+    - name: techjavelin/iac-action-terraform-validate // terraform-format
+      id: format
+      run: terraform -chdir=${{ inputs.terraform-dir }} fmt -no-color -recursive
+      shell: bash
+
+    - name: techjavelin/iac-action-terraform-validate // terraform-validate
+      id: validate
+      run: terraform -chdir=${{ inputs.terraform-dir }} validate -no-color
+      shell: bash

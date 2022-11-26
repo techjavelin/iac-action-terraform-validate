@@ -1,0 +1,74 @@
+---
+name: "Continuous Integration | main"
+
+on:
+  push:
+    branches:
+      - main
+    pull_request:
+
+jobs:
+  composite-action-lint:
+    name: iac-action-terraform-validate // continuous // composite-action-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: composite-action-lint // checkout
+        uses: actions/checkout@v3
+
+      - name: composite-action-lint // install-action-validator
+        run: |
+          gh release download --pattern "*_linux_amd64" -R mpalmer/action-validator --skip-existing
+          chmod +x ./action-validator_linux_amd64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: composite-action-lint // execute
+        run: ./action-validator_linux_amd64 -v action.yml
+
+  test-terraform-versions:
+    name: iac-action-terraform-validate // continuous // test-terraform-versions
+    
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        version: ['1.3.2', 'latest']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: test-terraform-versions // checkout
+        uses: actions/checkout@v3
+
+      - name: test-terraform-versions // execute
+        uses: ./
+        with:
+          version: ${{ matrix.version }}
+
+      - name: test-terraform-versions // collect-results
+        id: collect-results
+        run: echo version=$(terraform version | head -n1 | cut -d' ' -f2) >> $GITHUB_OUTPUT
+
+      - name: test-terraform-versions // verify-version
+        if: ${{ matrix.version != 'latest' }}
+        uses: pr-mpt/actions-assert@v4
+        with:
+          assertion: npm://@assertions/is-equal
+          action   : ${{ steps.collect-results.outputs.version }}
+          expected : v${{ matrix.version }}
+
+      - name: test-terraform-versions // collect-facts
+        id: collect-facts
+        if: ${{ matrix.version == 'latest' }}
+        run: echo version=$(gh release list -R hashicorp/terraform --exclude-drafts --limit 20 | grep Latest | cut -f1)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: test-terraform-versions // verify-latest
+        if: ${{ matrix.version == 'latest' }}
+        uses: pr-mpt/actions-assert@v4
+        with:
+          assertion: npm://@assertions/is-equal
+          action   : ${{ steps.collect-results.outputs.version }}
+          expected : v${{ steps.collect-facts.outputs.version }}
