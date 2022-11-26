@@ -52,7 +52,7 @@ jobs:
 
       - name: test-terraform-versions // collect-results
         id: collect-results
-        run: echo "version=$(terraform version --json | jq -r '.terraform_version')" >> $GITHUB_OUTPUT
+        run: echo "version=$(terraform version --json | jq -Rsr '.terraform_version')" >> $GITHUB_OUTPUT
 
       - name: test-terraform-versions // verify-version
         if: ${{ matrix.version != 'latest' }}
