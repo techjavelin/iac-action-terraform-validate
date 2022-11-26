@@ -61,7 +61,7 @@ jobs:
       - name: test-terraform-versions // collect-facts
         id: collect-facts
         if: ${{ matrix.version == 'latest' }}
-        run: echo version=$(gh release list -R hashicorp/terraform --exclude-drafts --limit 20 | grep Latest | cut -f1 | cut -dv -f2)
+        run: echo "version=$(gh release list -R hashicorp/terraform --exclude-drafts --limit 20 | grep Latest | cut -f1 | cut -dv -f2)" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -71,4 +71,4 @@ jobs:
         with:
           assertion: npm://@assertions/is-equal
           actual   : ${{ steps.collect-results.outputs.version }}
-          expected : v${{ steps.collect-facts.outputs.version }}
+          expected : ${{ steps.collect-facts.outputs.version }}
