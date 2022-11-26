@@ -46,13 +46,9 @@ jobs:
         with:
           version: ${{ matrix.version }}
 
-      - run: terraform version
-
-      - run: jq --version
-
       - name: test-terraform-versions // collect-results
         id: collect-results
-        run: echo "version=$(terraform version --json | jq -Rsr '.terraform_version')" >> $GITHUB_OUTPUT
+        run: echo "version=$(terraform version | head -n1 | cut -d' ' -f2 | cut -dv -f2)" >> $GITHUB_OUTPUT
 
       - name: test-terraform-versions // verify-version
         if: ${{ matrix.version != 'latest' }}
