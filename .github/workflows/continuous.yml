@@ -46,7 +46,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
 
-      - run: echo $(terraform version | head -n1 | cut -d' ' -f2 | cut -dv -f2)
+      - run: echo `terraform version | head -n1 | cut -d' ' -f2 | cut -dv -f2`
 
       - name: test-terraform-versions // collect-results
         id: collect-results
