@@ -46,7 +46,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
 
-      - run: terraform version --json | jq -r .terraform_version
+      - run: terraform version --json 
 
       - name: test-terraform-versions // collect-results
         id: collect-results
