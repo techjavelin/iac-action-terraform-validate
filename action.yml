@@ -40,6 +40,7 @@ runs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: ${{ inputs.version }}
+        terraform_wrapper: false
 
     - name: techjavelin/iac-action-terraform-validate // terraform-init
       id: init
