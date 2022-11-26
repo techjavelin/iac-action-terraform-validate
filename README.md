@@ -1,26 +1,26 @@
-# iac-action-terraform-lint
+# iac-action-terraform-validate
 
-[![Continuous Integration | main](https://github.com/techjavelin/iac-action-terraform-lint/actions/workflows/continuous.yml/badge.svg)](https://github.com/techjavelin/iac-action-terraform-lint/actions/workflows/continuous.yml)
+[![Continuous Integration | main](https://github.com/techjavelin/iac-action-terraform-validate/actions/workflows/continuous.yml/badge.svg)](https://github.com/techjavelin/iac-action-terraform-validate/actions/workflows/continuous.yml)
 
-The `techjavelin/iac-action-terraform-lint` action is a part of the [iac-actions collection](https://github.com/search?q=org%3Atechjavelin+iac-action) created by [Tech Javelin](https://github.com/techjavelin) to make creating consistent secure infrastructure configuration management as easy as each element in your Infrastructure-as-Code projects by creating the concept of Infrastructure-as-Code-as-Code - allowing you to describe your IaC Workflows as immutable code, provide testing strategies to ensure changes to infrastructure won't break production, and create simple, repeatable processes for managing your infrastructure.
+The `techjavelin/iac-action-terraform-validate` action is a part of the [iac-actions collection](https://github.com/search?q=org%3Atechjavelin+iac-action) created by [Tech Javelin](https://github.com/techjavelin) to make creating consistent secure infrastructure configuration management as easy as each element in your Infrastructure-as-Code projects by creating the concept of Infrastructure-as-Code-as-Code - allowing you to describe your IaC Workflows as immutable code, provide testing strategies to ensure changes to infrastructure won't break production, and create simple, repeatable processes for managing your infrastructure.
 
 # Usage
 
-This action can **only** be run on the `ubuntu` (`ubuntu-latest`, `ubuntu-18.04`, `ubuntu-20.04`, `ubuntu-22.04`) Github Action runners.
+This action can be run on the `ubuntu`, `windows`, or `macos` Github Action runners.
 
-The default configuration will install the latest version of [TFLint](https://github.com/terraform-linters/tflint) with it's default set of rules and plugins, and run it against the project root directory, against any `.tf` files found under (non-recursive).
+The default configuration will install the latest version of [Terraform](https://github.com/hashicorp/terraform) and run the fmt and validate against the project root directory, against any `.tf` files found under (recursive).
 
 ```
 steps:
-  - uses: techjavelin/iac-action-terraform-lint@V1
+  - uses: techjavelin/iac-action-terraform-validate@V1
 ```
 
-A specific version of `tflint` can be used
+A specific version of `terraform` can be used
 ```
 steps:
-  - uses: techjavelin/iac-action-terraform-lint@v1
+  - uses: techjavelin/iac-action-terraform-validate@v1
     with:
-      version: 'v0.42.0'
+      version: '1.3.5'
 ```
 
 More detailed configuration can be done using additional [Input Parameters](#Input+Parameters)
@@ -31,17 +31,15 @@ More detailed configuration can be done using additional [Input Parameters](#Inp
 | - | - | - | - | - |
 | `terraform-dir` | Directory where `tflint` will look for your terraform files | Y | `<Project Root>` | `terraform-dir: terraform/my-environment` |
 | `version` | Use a specific verison of `tflint` | N | `latest` | `version: 'v0.42.0'` |
-| `config` | Provide a [configuration]() file | N | - | `config: .github/config/tflint.hcl` |
-| `format` | Force tflint to output in a different format (overrides config) | N | - | `format: json` |
-| `vars` | Comma-delimited list of variables | N | - | `vars: foo=bar,baz=boo` |
 
 ## Outputs
 
 | Output | Description |
 | - | - |
-| `vars` | Rendered Argument List of Vars passed to `tflint`. This can be incredibly useful for debugging to make sure variables are all spelled right, etc. |
-| `result` | The output of the `tflint` process |
 | `init` | The output of the `init` command 
+| `format` | Results of the format command
+| `format_files` | List of files that were formatted
+| `validate` | Results of validation
 
 # License
 
