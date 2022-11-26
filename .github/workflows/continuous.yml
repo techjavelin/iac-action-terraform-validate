@@ -46,7 +46,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
 
-      - run: terraform version --json 
+      - run: terraform version
 
       - run: jq --version
 
