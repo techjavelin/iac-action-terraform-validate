@@ -50,7 +50,7 @@ runs:
         terraform_wrapper: false
 
     - name: techjavelin/iac-action-terraform-validate // credential
-      if: ${{ inputs.terraform_cloud_credential.token != null }}
+      if: ${{ inputs.terraform_cloud_credential_token != null }}
       run: |
         echo -e "credentials = \"${{ inputs.backend_cloud_credential_hostname }}\" {\n\ttoken = \"${{ inputs.backend_cloud_credential_token }}\"\n}" >> $HOME/.terraformrc
       shell: bash
