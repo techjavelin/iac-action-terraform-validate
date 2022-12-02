@@ -19,9 +19,6 @@ inputs:
     description: "The hostname of the cloud backend provider"
     required: false
     default: "app.terraform.io"
-  backend_cloud_credential_token:
-    description: "If you're using terraform cloud as a backend, provide your credential here"
-    required: false
 
 outputs:
   init:
@@ -48,12 +45,6 @@ runs:
       with:
         terraform_version: ${{ inputs.version }}
         terraform_wrapper: false
-
-    - name: techjavelin/iac-action-terraform-validate // credential
-      if: ${{ inputs.terraform_cloud_credential_token != null }}
-      run: |
-        echo -e "credentials = \"${{ inputs.backend_cloud_credential_hostname }}\" {\n\ttoken = \"${{ inputs.backend_cloud_credential_token }}\"\n}" >> $HOME/.terraformrc
-      shell: bash
 
     - name: techjavelin/iac-action-terraform-validate // terraform-init
       id: init
