@@ -15,10 +15,6 @@ inputs:
     description: "Specific version of terraform to use"
     required: false
     default: 'latest'
-  backend_cloud_credential_hostname:
-    description: "The hostname of the cloud backend provider"
-    required: false
-    default: "app.terraform.io"
 
 outputs:
   init:
